@@ -43,6 +43,23 @@ def get_all_messages(request):
     serializer2 = MessageSerializer(msgs_list, many=True)
     return HttpResponse(json.dumps(serializer2.data), content_type='application/json')
 
+def create_message(request):
+    """" create the message by the giving parameters """
+    try:
+        print(json.loads(request.body))
+        json_data = json.loads(request.body)
+        print(json_data)
+        new_msg = Message()
+        new_msg.sender = json_data['sender']
+        new_msg.reciever = json_data['reciever']
+        new_msg.subject = json_data['subject']
+        new_msg.message = json_data['message']
+        new_msg.save()
+        serializer = MessageSerializer(new_msg, many=False)
+        return HttpResponse(json.dumps(serializer.data), content_type='application/json')
+    except Exception:
+        return {"error": "check the request, something went wrong!!!"}
+
 """
 def get_all_unread_messages(request, email):
     all_msgs_str = ''
